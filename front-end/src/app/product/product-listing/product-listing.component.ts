@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -8,7 +8,6 @@ import { ApiService } from 'src/app/services/api.service';
 import { Product } from 'src/app/interface';
 import { MatDatepicker } from '@angular/material/datepicker';
 import * as moment from 'moment';
-import { fromEvent } from 'rxjs';
 import { debounceTime,distinctUntilChanged,tap } from 'rxjs/operators';
 import { FormControl, FormGroup } from '@angular/forms';
 
@@ -17,7 +16,7 @@ import { FormControl, FormGroup } from '@angular/forms';
   templateUrl: './product-listing.component.html',
   styleUrls: ['./product-listing.component.css']
 })
-export class ProductListingComponent implements OnInit, AfterViewInit  {
+export class ProductListingComponent implements AfterViewInit  {
 
   constructor(
     public dialog: MatDialog,
@@ -30,7 +29,6 @@ export class ProductListingComponent implements OnInit, AfterViewInit  {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild('startDate') startDate: MatDatepicker<any>;
   @ViewChild('endDate') endDate: MatDatepicker<any>;
-  // @ViewChild('input') input: ElementRef;
 
   filterGroup:FormGroup = new FormGroup({
     search : new FormControl('')
@@ -43,16 +41,13 @@ export class ProductListingComponent implements OnInit, AfterViewInit  {
   dataSource = new MatTableDataSource(this.products);
   generalSearch:string = "";
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
+  //modal for add product
   openDialog(): void {
     const dialogRef = this.dialog.open(AddProductComponent, {
       width: '250px',
     });
 
+    //when modal close and product is added, refresh the record
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         this.getAllProducts();
@@ -60,7 +55,9 @@ export class ProductListingComponent implements OnInit, AfterViewInit  {
     });
   }
 
-  getAllProducts(params:any = {}){
+  getAllProducts(){
+    //get all params
+    let params = this.getQueryParams();
     this.apiService.create('product').get(params)
     .subscribe((response)=>{
       if(response.status === 'success'){
@@ -86,12 +83,18 @@ export class ProductListingComponent implements OnInit, AfterViewInit  {
     params.endDate = moment(endDate).format(this.formatMomentSendToServer);
     if(this.filterGroup.controls.search.value)
       params.generalSearch = this.filterGroup.controls.search.value;
+    if(params.startDate || params.endDate || params.generalSearch)
+    {
+      delete params.offset;
+      delete params.limit;
+      this.paginator.pageIndex = 0;
+    }
+
     return params;
   }
 
   filter(){
-    let params = this.getQueryParams();
-    this.getAllProducts(params);
+    this.getAllProducts();
   }
 
   reset(){
@@ -101,30 +104,27 @@ export class ProductListingComponent implements OnInit, AfterViewInit  {
   }
 
   ngAfterViewInit():void{
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.getAllProducts();
+
+    //for sorting
+    this.sort.sortChange.subscribe((value)=>{
+      this.getAllProducts();
+    })
+
+    //for pagination
+    this.paginator.page.subscribe((value)=>{
+      this.getAllProducts();
+    })
+
+    //whenever general search type
     this.filterGroup.controls.search.valueChanges
     .pipe(
         debounceTime(500),
         distinctUntilChanged()
     ).subscribe(()=>{
-      const params = this.getQueryParams();
-      this.getAllProducts(params);
-    })
-
-  }
-
-  ngOnInit(): void {
-    this.getAllProducts();
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-
-    this.sort.sortChange.subscribe((value)=>{
-      let params: any = this.getQueryParams();
-      this.getAllProducts(params);
-    })
-
-    this.paginator.page.subscribe((value)=>{
-      let params: any = this.getQueryParams();
-      this.getAllProducts(params);
+      this.getAllProducts();
     })
   }
 }

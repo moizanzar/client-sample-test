@@ -1,4 +1,3 @@
-// let sequelize = require('../model').sequelize;
 let productRepository = require('../repository/product.repository');
 const sequelize = require('sequelize');
 const moment = require('moment');
@@ -45,10 +44,10 @@ exports.getAll = function(filter = {}) {
         let generalSearch = {
             [Op.or]:{
                 name: {
-                    [Op.like]: filter.generalSearch
+                    [Op.like]: `%${filter.generalSearch}%`
                 },
                 price: {
-                    [Op.like]: filter.generalSearch
+                    [Op.like]: `%${filter.generalSearch}%`
                 },
             }
         };
@@ -56,7 +55,6 @@ exports.getAll = function(filter = {}) {
         Object.assign(filteration.where,generalSearch);
     }
 
-    console.log(filteration);
     return productRepository.getAll(filteration)
     .then((result)=>{
         delete filteration.limit;
