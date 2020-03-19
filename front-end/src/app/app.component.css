@@ -1,0 +1,6 @@
+html, body{
+    height: 100%;
+    background: #1c1c4e;
+  }
+  .mat-form-field-appearance-legacy .mat-form-field-label{color: #fff;}
+  .mat-form-field-appearance-legacy .mat-form-field-prefix .mat-icon-button, .mat-form-field-appearance-legacy .mat-form-field-suffix .mat-icon-button{color: #fff;}

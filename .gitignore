@@ -1,0 +1,44 @@
+# Add any directories, files, or patterns you don't want to be tracked by version control
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+testem.log
+/typings
+CHANGELOG.md
+LICENSE.md
+protractor.conf.js
+karma.conf.js
+
+# e2e
+e2e
+/e2e/*.js
+/e2e/*.map
+
+# System Files
+.DS_Store
+Thumbs.db
+
+#dependencies
+front-end/node_modules
+back-end/node_modules
+yarn.lock

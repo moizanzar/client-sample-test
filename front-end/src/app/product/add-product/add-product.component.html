@@ -1,0 +1,17 @@
+<form [formGroup]="productForm">
+<h1 mat-dialog-title>Add Product</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Product Name</mat-label>
+    <input matInput formControlName="name" required>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Price</mat-label>
+    <input type="number" matInput formControlName="price">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onSave()" cdkFocusInitial>Save</button>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+</div>
+</form>
