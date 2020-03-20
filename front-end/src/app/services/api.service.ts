@@ -13,9 +13,7 @@ export class ApiService {
   constructor(
     public http: HttpClient,
   ) {
-
   }
-
 
   create(apiUrl: string): ApiService {
     this.url = this.baseUrl + 'api/' + apiUrl;

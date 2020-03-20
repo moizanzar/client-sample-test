@@ -1,24 +1,23 @@
 <div class="content" role="main">
-    <div class="header-filter">
-        <div class="addNew" [formGroup]="filterGroup">
+    <div class="header-filter" [formGroup]="filterGroup">
+        <div class="addNew">
           <button mat-raised-button color="primary" (click)="openDialog()">Add Product</button>
           <mat-form-field>
-            <!-- <mat-label>Se</mat-label> -->
-            <input matInput #input formControlName="search" placeholder="General Search">
+            <input matInput formControlName="search" placeholder="General Search">
           </mat-form-field>
         </div>
 
         <div class="headerFilter">
           <mat-form-field>
               <mat-label>Start Date</mat-label>
-              <input matInput [matDatepicker]="startDate">
+              <input matInput formControlName="startDate" required [matDatepicker]="startDate">
               <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
               <mat-datepicker #startDate></mat-datepicker>
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>End Date</mat-label>
-            <input matInput [matDatepicker]="endDate">
+            <input matInput formControlName="endDate" required [matDatepicker]="endDate">
             <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
             <mat-datepicker #endDate></mat-datepicker>
           </mat-form-field>

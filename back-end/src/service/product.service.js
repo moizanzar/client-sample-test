@@ -1,6 +1,5 @@
 let productRepository = require('../repository/product.repository');
 const sequelize = require('sequelize');
-const moment = require('moment');
 
 exports.getAll = function(filter = {}) {
     const Op = sequelize.Op;

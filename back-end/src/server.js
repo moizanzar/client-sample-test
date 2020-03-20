@@ -4,12 +4,14 @@
 let express = require('express');
 let http = require('http');
 let bodyParser = require('body-parser');
+let methodOverride = require('method-override');
 let server = express();
 let model = require("./model");
-var cors = require('cors');
+let cors = require('cors');
 
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: false}));
+server.use(methodOverride())
 
 server.use(cors());
 server.all('*',function (req, res, next) {
@@ -27,23 +29,14 @@ server.all('*',function (req, res, next) {
 
 let productController = require('./controller/product.controller')
 
-//------- USER CRUD OPERATIONS ---------------
+//------- PRODUCT CRUD OPERATIONS ---------------
 server.use('/api/product', productController);
 
+server.use(logErrors)
+server.use(clientErrorHandler)
+server.use(errorHandler)
 
-server.use(function (err, req, res, next) {
-  if (!err) 
-    return next(); 
-
-  console.log("An Error occurred while executing the query.");
-  console.log("[Error] " + err);
-  res.status(500).json({
-    status: "Fail",
-    msg: "[Error] " + err,
-  });
-});
-
-const port = 5000;
+const port = process.env.APP_PORT;
 
 server = http.createServer(server);
 model.sequelize.sync().then(function () {
@@ -51,8 +44,25 @@ model.sequelize.sync().then(function () {
     server.on('error', (err)=>{ console.log("Error: "+ err) } );
   });
 
+//Error logging
+function logErrors (err, req, res, next) {
+  // log error msg and stack in a file, database or any other thing
+  next(err)
+}
 
+//Client Error Handler
+function clientErrorHandler (err, req, res, next) {
+  if (req.xhr) {
+    res.status(500).send({ error: 'Something failed!' })
+  } else {
+    next(err)
+  }
+}
 
-process.on('uncaughtException', function (exception) {
-  console.log(exception);
-});
+//catch all errors
+function errorHandler (err, req, res, next) {
+  res.status(500).json({
+    status: "Fail",
+    msg: "[Error] " + err,
+  });
+}

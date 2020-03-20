@@ -2,10 +2,11 @@
 let Sequelize = require('sequelize');
 let fs = require('fs');
 let path = require('path');
-let dbInfo = require('../config/config.json');
+let dbInfo = require('../config/config.js').getConfig();
 let basename  = path.basename(__filename);
 
-const config = dbInfo.development;
+const env       = process.env.APP_ENV || 'development';
+const config = dbInfo[env];
 
 let db = {};
 

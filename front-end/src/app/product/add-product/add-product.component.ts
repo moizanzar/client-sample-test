@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Product } from 'src/app/interface';
@@ -7,9 +7,9 @@ import { ApiService } from 'src/app/services/api.service';
 @Component({
   selector: 'app-add-product',
   templateUrl: './add-product.component.html',
-  styleUrls: ['./add-product.component.css']
+  styles: []
 })
-export class AddProductComponent implements OnInit {
+export class AddProductComponent {
   constructor(
     public dialogRef: MatDialogRef<AddProductComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Product,
@@ -46,8 +46,4 @@ export class AddProductComponent implements OnInit {
       this.productForm.markAsTouched();
     }
   }
-
-  ngOnInit(): void {
-  }
-
 }
